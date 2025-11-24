@@ -93,6 +93,8 @@ from open_webui.routers import (
     users,
     utils,
     scim,
+    documents,  # Sirru Docs AI
+    presentations,  # Sirru Slides AI
 )
 
 from open_webui.routers.retrieval import (
@@ -1316,6 +1318,12 @@ app.include_router(
     evaluations.router, prefix="/api/v1/evaluations", tags=["evaluations"]
 )
 app.include_router(utils.router, prefix="/api/v1/utils", tags=["utils"])
+
+# Sirru Docs AI
+app.include_router(documents.router, prefix="/api/v1/documents", tags=["documents"])
+
+# Sirru Slides AI
+app.include_router(presentations.router, prefix="/api/v1/presentations", tags=["presentations"])
 
 # SCIM 2.0 API for identity management
 if SCIM_ENABLED:

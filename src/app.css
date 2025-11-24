@@ -1,5 +1,60 @@
 @reference "./tailwind.css";
 
+/* ========================================
+   SIRRU DESIGN SYSTEM
+   Sovereign AI Workspace for Africa
+   ======================================== */
+
+/* CSS Custom Properties for Sirru Brand */
+:root {
+	/* Primary - Forest Green */
+	--sirru-primary-50: #f0fdf4;
+	--sirru-primary-100: #dcfce7;
+	--sirru-primary-200: #bbf7d0;
+	--sirru-primary-300: #86efac;
+	--sirru-primary-400: #4ade80;
+	--sirru-primary-500: #22c55e;
+	--sirru-primary-600: #16a34a;
+	--sirru-primary-700: #15803d;
+	--sirru-primary-800: #166534;
+	--sirru-primary-900: #14532d;
+	--sirru-primary-950: #052e16;
+
+	/* Gold Accent */
+	--sirru-gold-50: #fefce8;
+	--sirru-gold-100: #fef9c3;
+	--sirru-gold-200: #fef08a;
+	--sirru-gold-300: #fde047;
+	--sirru-gold-400: #facc15;
+	--sirru-gold-500: #eab308;
+	--sirru-gold-600: #ca8a04;
+	--sirru-gold-700: #a16207;
+	--sirru-gold-800: #854d0e;
+	--sirru-gold-900: #713f12;
+
+	/* Terracotta Accent */
+	--sirru-terracotta-500: #f26d1d;
+	--sirru-terracotta-600: #e35213;
+
+	/* Semantic Colors */
+	--sirru-success: #22c55e;
+	--sirru-warning: #eab308;
+	--sirru-error: #ef4444;
+	--sirru-info: #3b82f6;
+
+	/* App-specific colors */
+	--sirru-chat-accent: var(--sirru-primary-600);
+	--sirru-docs-accent: #3b82f6;
+	--sirru-presentations-accent: #8b5cf6;
+}
+
+/* Dark mode adjustments */
+.dark {
+	--sirru-chat-accent: var(--sirru-primary-500);
+	--sirru-docs-accent: #60a5fa;
+	--sirru-presentations-accent: #a78bfa;
+}
+
 @font-face {
 	font-family: 'Inter';
 	src: url('/assets/fonts/Inter-Variable.ttf');
@@ -769,4 +824,199 @@ body {
 .pm-li-drop-outdent {
 	position: relative;
 	z-index: 0;
+}
+
+/* ========================================
+   SIRRU COMPONENT STYLES
+   ======================================== */
+
+/* Sirru App Card */
+.sirru-app-card {
+	@apply relative overflow-hidden rounded-2xl p-6 transition-all duration-300 ease-out;
+	@apply bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700;
+	@apply hover:shadow-sirru-lg hover:scale-[1.02] hover:border-transparent;
+}
+
+.sirru-app-card::before {
+	content: '';
+	@apply absolute inset-0 opacity-0 transition-opacity duration-300;
+}
+
+.sirru-app-card:hover::before {
+	@apply opacity-100;
+}
+
+.sirru-app-card--chat::before {
+	background: linear-gradient(135deg, rgba(22, 163, 74, 0.1) 0%, rgba(21, 128, 61, 0.05) 100%);
+}
+
+.sirru-app-card--docs::before {
+	background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.05) 100%);
+}
+
+.sirru-app-card--presentations::before {
+	background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(124, 58, 237, 0.05) 100%);
+}
+
+/* Sirru Button Styles */
+.sirru-btn {
+	@apply inline-flex items-center justify-center gap-2 font-medium rounded-lg transition-all duration-200;
+	@apply focus:outline-none focus:ring-2 focus:ring-offset-2;
+}
+
+.sirru-btn-primary {
+	@apply bg-sirru-primary-600 text-white hover:bg-sirru-primary-700;
+	@apply focus:ring-sirru-primary-500;
+}
+
+.sirru-btn-secondary {
+	@apply bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600;
+	@apply focus:ring-gray-500;
+}
+
+.sirru-btn-gold {
+	@apply bg-sirru-gold-500 text-gray-900 hover:bg-sirru-gold-600;
+	@apply focus:ring-sirru-gold-500;
+}
+
+.sirru-btn-sm {
+	@apply px-3 py-1.5 text-sm;
+}
+
+.sirru-btn-md {
+	@apply px-4 py-2 text-sm;
+}
+
+.sirru-btn-lg {
+	@apply px-6 py-3 text-base;
+}
+
+/* Sirru Input Styles */
+.sirru-input {
+	@apply w-full rounded-lg border border-gray-300 dark:border-gray-600;
+	@apply bg-white dark:bg-gray-800 text-gray-900 dark:text-white;
+	@apply px-4 py-2.5 text-sm;
+	@apply focus:outline-none focus:ring-2 focus:ring-sirru-primary-500 focus:border-transparent;
+	@apply placeholder:text-gray-400 dark:placeholder:text-gray-500;
+	@apply transition-all duration-200;
+}
+
+/* Sirru Badge */
+.sirru-badge {
+	@apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+}
+
+.sirru-badge-success {
+	@apply bg-sirru-primary-100 text-sirru-primary-800 dark:bg-sirru-primary-900/30 dark:text-sirru-primary-400;
+}
+
+.sirru-badge-warning {
+	@apply bg-sirru-gold-100 text-sirru-gold-800 dark:bg-sirru-gold-900/30 dark:text-sirru-gold-400;
+}
+
+.sirru-badge-info {
+	@apply bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400;
+}
+
+/* Sirru Navigation */
+.sirru-nav-item {
+	@apply flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200;
+	@apply text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white;
+	@apply hover:bg-gray-100 dark:hover:bg-gray-800;
+}
+
+.sirru-nav-item.active {
+	@apply text-sirru-primary-700 dark:text-sirru-primary-400;
+	@apply bg-sirru-primary-50 dark:bg-sirru-primary-900/20;
+}
+
+/* Sirru Shell Header */
+.sirru-header {
+	@apply sticky top-0 z-40 w-full border-b border-gray-200 dark:border-gray-800;
+	@apply bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl;
+}
+
+/* Sirru Logo Animation */
+.sirru-logo {
+	@apply transition-transform duration-300 ease-out;
+}
+
+.sirru-logo:hover {
+	@apply scale-105;
+}
+
+/* Sirru App Tile Grid */
+.sirru-app-grid {
+	@apply grid gap-6;
+	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+/* Sirru Document Card */
+.sirru-doc-card {
+	@apply relative rounded-xl p-4 transition-all duration-200;
+	@apply bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700;
+	@apply hover:shadow-sirru-md hover:border-sirru-primary-300 dark:hover:border-sirru-primary-700;
+}
+
+/* Sirru Slide Card */
+.sirru-slide-card {
+	@apply aspect-video rounded-xl overflow-hidden transition-all duration-200;
+	@apply bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700;
+	@apply hover:shadow-sirru-md hover:scale-[1.02];
+}
+
+/* Sirru Search */
+.sirru-search {
+	@apply relative;
+}
+
+.sirru-search-input {
+	@apply w-full pl-10 pr-4 py-2.5 rounded-xl;
+	@apply bg-gray-100 dark:bg-gray-800 border-0;
+	@apply text-gray-900 dark:text-white text-sm;
+	@apply focus:outline-none focus:ring-2 focus:ring-sirru-primary-500;
+	@apply placeholder:text-gray-500;
+}
+
+.sirru-search-icon {
+	@apply absolute left-3 top-1/2 -translate-y-1/2 text-gray-400;
+}
+
+/* Sirru Organization Badge */
+.sirru-org-badge {
+	@apply inline-flex items-center gap-2 px-3 py-1.5 rounded-full;
+	@apply bg-sirru-primary-50 dark:bg-sirru-primary-900/20;
+	@apply text-sirru-primary-700 dark:text-sirru-primary-400;
+	@apply text-sm font-medium;
+}
+
+/* Sirru Stats Card */
+.sirru-stats-card {
+	@apply rounded-xl p-5 bg-white dark:bg-gray-800;
+	@apply border border-gray-200 dark:border-gray-700;
+}
+
+.sirru-stats-value {
+	@apply text-3xl font-bold text-gray-900 dark:text-white;
+}
+
+.sirru-stats-label {
+	@apply text-sm text-gray-500 dark:text-gray-400 mt-1;
+}
+
+/* Sirru Empty State */
+.sirru-empty-state {
+	@apply flex flex-col items-center justify-center py-12 px-4 text-center;
+}
+
+.sirru-empty-state-icon {
+	@apply w-16 h-16 mb-4 text-gray-300 dark:text-gray-600;
+}
+
+.sirru-empty-state-title {
+	@apply text-lg font-medium text-gray-900 dark:text-white mb-2;
+}
+
+.sirru-empty-state-description {
+	@apply text-sm text-gray-500 dark:text-gray-400 max-w-sm;
 }
