@@ -1,0 +1,120 @@
+# Sirru AI Workspace - Docker Compose for Coolify Deployment
+# Sovereign AI platform for African governments and enterprises
+
+services:
+  sirru:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        USE_CUDA: ${USE_CUDA:-false}
+        USE_OLLAMA: ${USE_OLLAMA:-false}
+        USE_EMBEDDING_MODEL: ${EMBEDDING_MODEL:-sentence-transformers/all-MiniLM-L6-v2}
+    image: sirru:${SIRRU_VERSION:-latest}
+    container_name: sirru
+    volumes:
+      - sirru-data:/app/backend/data
+    ports:
+      - ${SIRRU_PORT:-8080}:8080
+    environment:
+      # Core Settings
+      - ENV=prod
+      - WEBUI_NAME=${WEBUI_NAME:-Sirru}
+      - WEBUI_SECRET_KEY=${WEBUI_SECRET_KEY:?Secret key is required}
+      - WEBUI_URL=${WEBUI_URL:-http://localhost:8080}
+
+      # Database (default SQLite, use PostgreSQL for production)
+      - DATABASE_URL=${DATABASE_URL:-}
+
+      # Authentication
+      - ENABLE_OAUTH_SIGNUP=${ENABLE_OAUTH_SIGNUP:-false}
+      - ENABLE_SIGNUP=${ENABLE_SIGNUP:-true}
+      - DEFAULT_USER_ROLE=${DEFAULT_USER_ROLE:-user}
+
+      # OAuth/SSO Settings (for enterprise deployments)
+      - OAUTH_CLIENT_ID=${OAUTH_CLIENT_ID:-}
+      - OAUTH_CLIENT_SECRET=${OAUTH_CLIENT_SECRET:-}
+      - OPENID_PROVIDER_URL=${OPENID_PROVIDER_URL:-}
+
+      # Ollama Settings (local AI inference)
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://ollama:11434}
+      - OLLAMA_API_BASE_URL=${OLLAMA_API_BASE_URL:-http://ollama:11434/api}
+
+      # OpenAI Compatible API (optional)
+      - OPENAI_API_BASE_URL=${OPENAI_API_BASE_URL:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+
+      # RAG Settings
+      - RAG_EMBEDDING_MODEL=${EMBEDDING_MODEL:-sentence-transformers/all-MiniLM-L6-v2}
+      - CHUNK_SIZE=${CHUNK_SIZE:-1000}
+      - CHUNK_OVERLAP=${CHUNK_OVERLAP:-200}
+
+      # Security
+      - ENABLE_ADMIN_EXPORT=${ENABLE_ADMIN_EXPORT:-true}
+      - ENABLE_ADMIN_CHAT_ACCESS=${ENABLE_ADMIN_CHAT_ACCESS:-false}
+
+      # Telemetry (disabled for sovereign deployments)
+      - SCARF_NO_ANALYTICS=true
+      - DO_NOT_TRACK=true
+      - ANONYMIZED_TELEMETRY=false
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    restart: unless-stopped
+    networks:
+      - sirru-network
+
+  # Optional: Local Ollama for air-gapped deployments
+  ollama:
+    image: ollama/ollama:${OLLAMA_VERSION:-latest}
+    container_name: sirru-ollama
+    profiles:
+      - with-ollama
+    volumes:
+      - ollama-data:/root/.ollama
+    ports:
+      - ${OLLAMA_PORT:-11434}:11434
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+    restart: unless-stopped
+    networks:
+      - sirru-network
+
+  # Optional: PostgreSQL for production
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: sirru-postgres
+    profiles:
+      - with-postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-sirru}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?Database password required}
+      - POSTGRES_DB=${POSTGRES_DB:-sirru}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-sirru}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - sirru-network
+
+volumes:
+  sirru-data:
+    name: sirru-data
+  ollama-data:
+    name: sirru-ollama-data
+  postgres-data:
+    name: sirru-postgres-data
+
+networks:
+  sirru-network:
+    name: sirru-network
+    driver: bridge
